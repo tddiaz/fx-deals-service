@@ -1,4 +1,4 @@
-package com.tristan.machine_problem;
+package com.tristan.fx_deals;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -9,7 +9,7 @@
 	<packaging>jar</packaging>
 
 	<name>foreign-exchange-deals-service</name>
-	<description>Foreign Exchange Deals Analyzer Service </description>
+	<description>Foreign Exchange Deals Analyzer Service</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -69,6 +69,16 @@
 	</dependencies>
 
 	<build>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>config/</directory>
+			</resource>
+		</resources>
+
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
