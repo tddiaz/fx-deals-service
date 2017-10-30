@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Setter
 public class ValidDeal extends Deal {
 
-    @Column(name = "deal_id")
+    @Column(name = "deal_id", nullable = false, unique = true)
     private String dealId;
 
     @Column(name = "from_currency")
