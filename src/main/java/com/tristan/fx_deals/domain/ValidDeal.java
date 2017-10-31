@@ -1,5 +1,6 @@
 package com.tristan.fx_deals.domain;
 
+import com.tristan.fx_deals.service.dto.DealDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -34,9 +36,21 @@ public class ValidDeal extends Deal {
     private LocalDateTime dateTime;
 
     @Column(name = "amount")
-    private Double amount;
+    private BigDecimal amount;
 
     public ValidDeal() {
 
+    }
+
+    public static ValidDeal valueOf(DealDto dealDto) {
+
+        final ValidDeal validDeal = new ValidDeal();
+        validDeal.setDealId(dealDto.getDealId());
+        validDeal.setFromCurrency(CurrencyCode.valueOf(dealDto.getFromCurrency()));
+        validDeal.setToCurrency(CurrencyCode.valueOf(dealDto.getToCurrency()));
+        validDeal.setFileName(dealDto.getFileName());
+        validDeal.setAmount(new BigDecimal(dealDto.getAmount()));
+
+        return  validDeal;
     }
 }

@@ -1,5 +1,6 @@
 package com.tristan.fx_deals.domain;
 
+import com.tristan.fx_deals.service.dto.DealDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,10 +17,34 @@ import javax.persistence.Table;
 @Setter
 public class InvalidDeal extends Deal {
 
-    @Column(name = "data")
-    private String data;
+    @Column(name = "deal_id", nullable = true)
+    private String dealId;
+
+    @Column(name = "from_currency", nullable = true)
+    private String fromCurrency;
+
+    @Column(name = "to_currency", nullable = true)
+    private String toCurrency;
+
+    @Column(name = "date_time", nullable = true)
+    private String dateTime;
+
+    @Column(name = "amount", nullable = true)
+    private String amount;
 
     public InvalidDeal() {
 
+    }
+
+    public static InvalidDeal valueOf(DealDto dealDto) {
+
+        final InvalidDeal invalidDeal = new InvalidDeal();
+        invalidDeal.setDealId(dealDto.getDealId());
+        invalidDeal.setFromCurrency(dealDto.getFromCurrency());
+        invalidDeal.setToCurrency(dealDto.getToCurrency());
+        invalidDeal.setFileName(dealDto.getFileName());
+        invalidDeal.setAmount(dealDto.getAmount());
+
+        return invalidDeal;
     }
 }

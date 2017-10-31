@@ -5,7 +5,6 @@ import com.tristan.fx_deals.domain.ValidDeal;
 import com.tristan.fx_deals.repository.InvalidDealRepository;
 import com.tristan.fx_deals.repository.ValidDealRepository;
 import com.tristan.fx_deals.service.dto.DealDto;
-import com.tristan.fx_deals.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,27 +48,18 @@ public class DealServiceImpl implements DealService {
 
         for (DealDto dealDto : dealDtos) {
             if (dealsValidator.valid(dealDto)) {
-
-                final ValidDeal validDeal = new ValidDeal();
-                validDeal.setDealId(dealDto.getDealId());
-                validDeal.setFromCurrency(dealDto.getFromCurrency());
-                validDeal.setFromCurrency(dealDto.getToCurrency());
-                validDeal.setFileName(dealDto.getFileName());
-                validDeal.setAmount(dealDto.getAmount());
-
-                validDeals.add(validDeal);
-
+                validDeals.add(ValidDeal.valueOf(dealDto));
             } else {
-
-                final InvalidDeal invalidDeal = new InvalidDeal();
-                invalidDeal.setData(JsonUtil.toJsonString(dealDto));
-                invalidDeal.setFileName(dealDto.getFileName());
-
-                invalidDeals.add(invalidDeal);
+                invalidDeals.add(InvalidDeal.valueOf(dealDto));
             }
         }
 
         validDealRepository.save(validDeals);
         invalidDealRepository.save(invalidDeals);
+    }
+
+    @Override
+    public ValidDeal findValidDealByDealId(String dealId) {
+        return validDealRepository.findByDealId(dealId);
     }
 }

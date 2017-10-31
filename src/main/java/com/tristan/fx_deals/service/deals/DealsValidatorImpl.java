@@ -21,6 +21,6 @@ public class DealsValidatorImpl implements DealsValidator {
 
     @Override
     public boolean valid(DealDto dealDto) {
-       return validator.validate(dealDto).size() <= 0;
+        return validator.validate(dealDto).size() <= 0;
     }
 }

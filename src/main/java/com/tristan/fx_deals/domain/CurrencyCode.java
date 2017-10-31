@@ -1,5 +1,8 @@
 package com.tristan.fx_deals.domain;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by tristandiaz on 10/29/17.
  */
@@ -170,7 +173,18 @@ public enum CurrencyCode {
 
     private String description;
 
+    public static final Set<String> ISO_CURRENCY_CODES;
+
+    static {
+        ISO_CURRENCY_CODES = new HashSet<>(CurrencyCode.values().length);
+
+        for (CurrencyCode code : CurrencyCode.values()) {
+            ISO_CURRENCY_CODES.add(code.toString());
+        }
+    }
+
     private CurrencyCode(String description) {
         this.description = description;
     }
+
 }

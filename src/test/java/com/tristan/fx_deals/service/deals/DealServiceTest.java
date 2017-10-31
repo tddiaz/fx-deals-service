@@ -1,4 +1,4 @@
-package com.tristan.fx_deals.service;
+package com.tristan.fx_deals.service.deals;
 
 import com.tristan.fx_deals.domain.InvalidDeal;
 import com.tristan.fx_deals.domain.ValidDeal;
@@ -17,11 +17,17 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyListOf;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Created by tristandiaz on 10/29/17.
@@ -56,6 +62,19 @@ public class DealServiceTest {
         verify(validDealRepository, atLeastOnce()).save(anyListOf(ValidDeal.class));
         verify(invalidDealRepository, atLeastOnce()).save(anyListOf(InvalidDeal.class));
 
+    }
+
+    @Test
+    public void testFIndValidDealByDealId() {
+
+        ValidDeal testDeal = new ValidDeal();
+
+        when(validDealRepository.findByDealId(anyString())).thenReturn(testDeal);
+
+        ValidDeal returnedDeal = dealService.findValidDealByDealId("deal_id");
+
+        verify(validDealRepository, atLeastOnce()).findByDealId(eq("deal_id"));
+        assertThat(returnedDeal, is(testDeal));
     }
 
 }
