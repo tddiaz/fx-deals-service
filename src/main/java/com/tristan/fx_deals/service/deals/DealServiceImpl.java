@@ -2,11 +2,14 @@ package com.tristan.fx_deals.service.deals;
 
 import com.tristan.fx_deals.domain.CurrencyCode;
 import com.tristan.fx_deals.domain.InvalidDeal;
+import com.tristan.fx_deals.domain.TransactionLog;
 import com.tristan.fx_deals.domain.ValidDeal;
 import com.tristan.fx_deals.event.DealsImportedEvent;
 import com.tristan.fx_deals.repository.InvalidDealRepository;
 import com.tristan.fx_deals.repository.ValidDealRepository;
 import com.tristan.fx_deals.service.dto.DealDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,8 @@ import java.util.Map;
  */
 @Service("dealService")
 public class DealServiceImpl implements DealService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DealServiceImpl.class);
 
     private InvalidDealRepository invalidDealRepository;
 
@@ -59,7 +64,9 @@ public class DealServiceImpl implements DealService {
 
     @Override
     @Transactional
-    public void batchSave(List<DealDto> dealDtos) {
+    public void batchSave(List<DealDto> dealDtos, TransactionLog transactionLog) {
+
+        LOGGER.info("Importing Deals. Number of entries: {}", dealDtos.size());
 
         final Map<CurrencyCode, Long> currencyCountMap = accumulativeDealCountService.findAllDealsCurrencyCountMap();
 
@@ -78,7 +85,12 @@ public class DealServiceImpl implements DealService {
         validDealRepository.save(validDeals);
         invalidDealRepository.save(invalidDeals);
 
-        applicationEventPublisher.publishEvent(new DealsImportedEvent(currencyCountMap));
+        LOGGER.info("Deals Imported Summary: Number of Valid Deals - {}, Number of Invalid Deals - {}", validDeals.size(), invalidDeals.size());
+
+        transactionLog.setDealsImportedCount(validDeals.size());
+        transactionLog.setInvalidDealsImportedCount(invalidDeals.size());
+
+        applicationEventPublisher.publishEvent(new DealsImportedEvent(currencyCountMap, transactionLog));
     }
 
     private void incrementCurrencyCount(Map<CurrencyCode, Long> currencyCountMap, CurrencyCode code) {

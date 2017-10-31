@@ -2,6 +2,7 @@ package com.tristan.fx_deals.service.deals;
 
 import com.tristan.fx_deals.domain.CurrencyCode;
 import com.tristan.fx_deals.domain.InvalidDeal;
+import com.tristan.fx_deals.domain.TransactionLog;
 import com.tristan.fx_deals.domain.ValidDeal;
 import com.tristan.fx_deals.event.DealsImportedEvent;
 import com.tristan.fx_deals.repository.InvalidDealRepository;
@@ -81,10 +82,12 @@ public class DealServiceTest {
         dealDtos.add(deal2);
         dealDtos.add(deal3);
 
+        TransactionLog transactionLog = new TransactionLog();
+
         when(accumulativeDealCountService.findAllDealsCurrencyCountMap()).thenReturn(currencyCountMap);
         when(dealsValidator.valid(any(DealDto.class))).thenReturn(true);
 
-        dealService.batchSave(dealDtos);
+        dealService.batchSave(dealDtos, transactionLog);
 
         verify(accumulativeDealCountService, atLeastOnce()).findAllDealsCurrencyCountMap();
         verify(dealsValidator, times(3)).valid(any(DealDto.class));
@@ -94,6 +97,8 @@ public class DealServiceTest {
 
         assertThat(currencyCountMap.get(CurrencyCode.AED), is(2L));
         assertThat(currencyCountMap.get(CurrencyCode.USD), is(5L));
+        assertThat(transactionLog.getDealsImportedCount(), is(3));
+        assertThat(transactionLog.getInvalidDealsImportedCount(), is(0));
     }
 
     @Test

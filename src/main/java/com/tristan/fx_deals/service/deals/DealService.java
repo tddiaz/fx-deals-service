@@ -1,6 +1,7 @@
 package com.tristan.fx_deals.service.deals;
 
 
+import com.tristan.fx_deals.domain.TransactionLog;
 import com.tristan.fx_deals.domain.ValidDeal;
 import com.tristan.fx_deals.service.dto.DealDto;
 
@@ -11,7 +12,7 @@ import java.util.List;
  */
 public interface DealService {
 
-    void batchSave(List<DealDto> dealDtos);
+    void batchSave(List<DealDto> dealDtos, TransactionLog transactionLog);
 
     ValidDeal findValidDealByDealId(String dealId);
 

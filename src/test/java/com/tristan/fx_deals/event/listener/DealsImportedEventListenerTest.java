@@ -1,8 +1,10 @@
 package com.tristan.fx_deals.event.listener;
 
 import com.tristan.fx_deals.domain.CurrencyCode;
+import com.tristan.fx_deals.domain.TransactionLog;
 import com.tristan.fx_deals.event.DealsImportedEvent;
 import com.tristan.fx_deals.service.deals.AccumulativeDealCountService;
+import com.tristan.fx_deals.service.logging.TransactionLogService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -22,6 +24,9 @@ public class DealsImportedEventListenerTest {
     @Mock
     private AccumulativeDealCountService accumulativeDealCountService;
 
+    @Mock
+    private TransactionLogService transactionLogService;
+
     @InjectMocks
     private DealsImportedEventListener dealsImportedEventListener = new DealsImportedEventListener();
 
@@ -29,11 +34,13 @@ public class DealsImportedEventListenerTest {
     public void testExecute() {
 
         Map<CurrencyCode, Long> currencyCountMap = new HashMap<>();
-        DealsImportedEvent event = new DealsImportedEvent(currencyCountMap);
+        TransactionLog transactionLog = new TransactionLog();
+        DealsImportedEvent event = new DealsImportedEvent(currencyCountMap, transactionLog);
 
         dealsImportedEventListener.execute(event);
 
         Mockito.verify(accumulativeDealCountService, Mockito.atLeastOnce()).updateCountOfDealsPerCurrency(Mockito.eq(currencyCountMap));
+        Mockito.verify(transactionLogService, Mockito.atLeastOnce()).save(Mockito.eq(transactionLog));
 
     }
 }
