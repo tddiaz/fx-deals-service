@@ -33,7 +33,7 @@ public class DealIdUniqueValidatorTest extends IntegrationBaseTest {
     public void testUnique_true() {
 
         BeanValidation beanValidation = new BeanValidation();
-        beanValidation.setValue("0001");
+        beanValidation.setValue("0000");
 
         Set<ConstraintViolation<BeanValidation>> constraintViolations = validator.validate(beanValidation);
 
