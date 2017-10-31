@@ -1,6 +1,6 @@
 package com.tristan.fx_deals.validation;
 
-import com.tristan.fx_deals.IntegrationBaseTest;
+import com.tristan.fx_deals.SpringIntegrationTest;
 import com.tristan.fx_deals.domain.CurrencyCode;
 import com.tristan.fx_deals.domain.ValidDeal;
 import com.tristan.fx_deals.repository.ValidDealRepository;
@@ -22,7 +22,7 @@ import static org.junit.Assert.assertThat;
 /**
  * Created by tristandiaz on 10/31/17.
  */
-public class DealIdUniqueValidatorTest extends IntegrationBaseTest {
+public class DealIdUniqueValidatorTest extends SpringIntegrationTest {
 
     private Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
