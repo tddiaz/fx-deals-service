@@ -31,9 +31,25 @@ public class TransactionLogServiceTest {
 
         when(transactionLogRepository.saveAndFlush(any(TransactionLog.class))).thenReturn(transactionLog);
 
-        TransactionLog log = transactionLogService.save(transactionLog);
+        TransactionLog persistedEntity = transactionLogService.save(transactionLog);
 
         verify(transactionLogRepository, atLeastOnce()).saveAndFlush(eq(transactionLog));
-        assertThat(log, is(transactionLog));
+        assertThat(persistedEntity, is(transactionLog));
+    }
+
+    @Test
+    public void testFindByFileName() {
+
+        String fileName = "filename.csv";
+
+        TransactionLog transactionLog = new TransactionLog();
+        transactionLog.setFileName(fileName);
+
+        when(transactionLogRepository.findByFileName(eq(fileName))).thenReturn(transactionLog);
+
+        TransactionLog foundEntity = transactionLogService.findByFileName(fileName);
+
+        verify(transactionLogRepository, atLeastOnce()).findByFileName(eq(fileName));
+        assertThat(foundEntity, is(transactionLog));
     }
 }

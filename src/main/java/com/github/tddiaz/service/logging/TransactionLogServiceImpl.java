@@ -24,4 +24,9 @@ public class TransactionLogServiceImpl implements TransactionLogService {
     public TransactionLog save(TransactionLog transactionLog) {
         return transactionLogRepository.saveAndFlush(transactionLog);
     }
+
+    @Override
+    public TransactionLog findByFileName(String fileName) {
+        return transactionLogRepository.findByFileName(fileName);
+    }
 }

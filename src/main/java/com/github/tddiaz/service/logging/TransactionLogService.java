@@ -9,4 +9,6 @@ public interface TransactionLogService {
 
     TransactionLog save(TransactionLog transactionLog);
 
+    TransactionLog findByFileName(String fileName);
+
 }

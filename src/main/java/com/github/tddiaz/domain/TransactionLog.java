@@ -25,15 +25,20 @@ public class TransactionLog extends AbstractDomain {
     private String fileName;
 
     @Column(name = "deals_imported_count")
-    private int dealsImportedCount;
+    private int dealsImportedCount = 0;
 
     @Column(name = "invalid_deals_imported_count")
-    private int invalidDealsImportedCount;
+    private int invalidDealsImportedCount = 0;
 
     @Column(name = "process_duration")
     private double processDuration;
 
     public TransactionLog() {
         this.dateTime = LocalDateTime.now(Clock.systemUTC());
+    }
+
+    public TransactionLog(String fileName) {
+        this();
+        this.fileName = fileName;
     }
 }

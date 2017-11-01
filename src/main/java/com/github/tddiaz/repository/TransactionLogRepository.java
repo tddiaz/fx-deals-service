@@ -10,4 +10,6 @@ import java.util.UUID;
  */
 public interface TransactionLogRepository extends JpaRepository<TransactionLog, UUID> {
 
+    TransactionLog findByFileName(String fileName);
+
 }

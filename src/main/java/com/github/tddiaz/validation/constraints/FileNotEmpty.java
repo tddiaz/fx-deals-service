@@ -1,6 +1,6 @@
 package com.github.tddiaz.validation.constraints;
 
-import com.github.tddiaz.validation.CSVFileValidator;
+import com.github.tddiaz.validation.FileNotEmptyValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -13,14 +13,14 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Created by tristandiaz on 11/1/17.
+ * Created by tristandiaz on 11/2/17.
  */
 @Target({ METHOD, FIELD, ANNOTATION_TYPE })
 @Retention(RUNTIME)
-@Constraint(validatedBy = CSVFileValidator.class)
-public @interface CSV {
+@Constraint(validatedBy = FileNotEmptyValidator.class)
+public @interface FileNotEmpty {
 
-    String message() default "Invalid File Format.";
+    String message() default "Please upload a file.";
 
     Class<?>[] groups() default { };
 
