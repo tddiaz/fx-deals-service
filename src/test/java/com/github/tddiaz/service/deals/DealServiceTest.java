@@ -17,7 +17,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.anyListOf;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,15 +33,6 @@ public class DealServiceTest {
     @Mock
     private InvalidDealRepository invalidDealRepository;
 
-//    @Mock
-//    private DealsValidator dealsValidator;
-//
-//    @Mock
-//    private AccumulativeDealCountService accumulativeDealCountService;
-//
-//    @Mock
-//    private ApplicationEventPublisher applicationEventPublisher;
-
     @InjectMocks
     private DealService dealService = new DealServiceImpl();
 
@@ -51,12 +41,9 @@ public class DealServiceTest {
 
         List<ValidDeal> validDeals = new ArrayList<>();
 
-        when(validDealRepository.save(anyListOf(ValidDeal.class))).thenReturn(validDeals);
+        dealService.saveValidDeals(validDeals);
 
-        List<ValidDeal> savedDeals = dealService.saveValidDeals(validDeals);
-
-        verify(validDealRepository, atLeastOnce()).save(eq(validDeals));
-        assertThat(savedDeals, is(validDeals));
+        verify(validDealRepository, atLeastOnce()).batchSave(eq(validDeals));
     }
 
     @Test
@@ -64,59 +51,10 @@ public class DealServiceTest {
 
         List<InvalidDeal> invalidDeals = new ArrayList<>();
 
-        when(invalidDealRepository.save(anyListOf(InvalidDeal.class))).thenReturn(invalidDeals);
+        dealService.saveInvalidDeals(invalidDeals);
 
-        List<InvalidDeal> savedDeals = dealService.saveInvalidDeals(invalidDeals);
-
-        verify(invalidDealRepository, atLeastOnce()).save(eq(invalidDeals));
-        assertThat(savedDeals, is(invalidDeals));
+        verify(invalidDealRepository, atLeastOnce()).batchSave(eq(invalidDeals));
     }
-
-//    @Test
-//    public void testBatchSave() {
-//
-//        Map<CurrencyCode, Long> currencyCountMap = new HashMap<>(2);
-//        currencyCountMap.put(CurrencyCode.AED, 0L);
-//        currencyCountMap.put(CurrencyCode.USD, 4L);
-//
-//        DealDto deal1 = new DealDto();
-//        deal1.setFromCurrency("AED");
-//        deal1.setToCurrency("AED");
-//        deal1.setAmount("0");
-//
-//        DealDto deal2 = new DealDto();
-//        deal2.setFromCurrency("AED");
-//        deal2.setToCurrency("AED");
-//        deal2.setAmount("0");
-//
-//        DealDto deal3 = new DealDto();
-//        deal3.setFromCurrency("USD");
-//        deal3.setToCurrency("USD");
-//        deal3.setAmount("0");
-//
-//        List<DealDto> dealDtos = new ArrayList<>(3);
-//        dealDtos.add(deal1);
-//        dealDtos.add(deal2);
-//        dealDtos.add(deal3);
-//
-//        TransactionLog transactionLog = new TransactionLog();
-//
-//        when(accumulativeDealCountService.findAllDealsCurrencyCountMap()).thenReturn(currencyCountMap);
-//        when(dealsValidator.valid(any(DealDto.class))).thenReturn(true);
-//
-//        dealService.batchSave(dealDtos, transactionLog);
-//
-//        verify(accumulativeDealCountService, atLeastOnce()).findAllDealsCurrencyCountMap();
-//        verify(dealsValidator, times(3)).valid(any(DealDto.class));
-//        verify(validDealRepository, atLeastOnce()).save(anyListOf(ValidDeal.class));
-//        verify(invalidDealRepository, atLeastOnce()).save(anyListOf(InvalidDeal.class));
-//        verify(applicationEventPublisher, atLeastOnce()).publishEvent(any(DealsImportedEvent.class));
-//
-//        assertThat(currencyCountMap.get(CurrencyCode.AED), is(2L));
-//        assertThat(currencyCountMap.get(CurrencyCode.USD), is(5L));
-//        assertThat(transactionLog.getDealsImportedCount(), is(3));
-//        assertThat(transactionLog.getInvalidDealsImportedCount(), is(0));
-//    }
 
     @Test
     public void testFIndValidDealByDealId() {

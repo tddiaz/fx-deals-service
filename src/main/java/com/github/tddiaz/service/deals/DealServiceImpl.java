@@ -1,11 +1,9 @@
 package com.github.tddiaz.service.deals;
 
 import com.github.tddiaz.domain.InvalidDeal;
-import com.github.tddiaz.domain.TransactionLog;
 import com.github.tddiaz.domain.ValidDeal;
 import com.github.tddiaz.repository.InvalidDealRepository;
 import com.github.tddiaz.repository.ValidDealRepository;
-import com.github.tddiaz.service.dto.DealDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,20 +32,14 @@ public class DealServiceImpl implements DealService {
 
     @Override
     @Transactional
-    public List<InvalidDeal> saveInvalidDeals(List<InvalidDeal> invalidDeals) {
-        return invalidDealRepository.save(invalidDeals);
+    public void saveInvalidDeals(List<InvalidDeal> invalidDeals) {
+        invalidDealRepository.batchSave(invalidDeals);
     }
 
     @Override
     @Transactional
-    public List<ValidDeal> saveValidDeals(List<ValidDeal> validDeals) {
-        return validDealRepository.save(validDeals);
-    }
-
-    @Override
-    @Transactional
-    public void batchSave(List<DealDto> dealDtos, TransactionLog transactionLog) {
-
+    public void saveValidDeals(List<ValidDeal> validDeals) {
+         validDealRepository.batchSave(validDeals);
     }
 
 

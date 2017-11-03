@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by tristandiaz on 10/31/17.
@@ -39,5 +41,6 @@ public class ValidDealRepositoryTest extends RepositoryTest {
 
         assertThat(foundDeal, notNullValue());
         assertThat(foundDeal, hasProperty("dealId", is("0001")));
+
     }
 }

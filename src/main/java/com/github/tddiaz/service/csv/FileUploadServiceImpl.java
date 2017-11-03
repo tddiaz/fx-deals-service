@@ -4,24 +4,22 @@ import com.github.tddiaz.domain.CurrencyCode;
 import com.github.tddiaz.domain.InvalidDeal;
 import com.github.tddiaz.domain.TransactionLog;
 import com.github.tddiaz.domain.ValidDeal;
+import com.github.tddiaz.event.DealsImportedEvent;
 import com.github.tddiaz.exception.FileUploadException;
 import com.github.tddiaz.service.deals.AccumulativeDealCountService;
 import com.github.tddiaz.service.deals.DealService;
 import com.github.tddiaz.service.deals.DealsValidator;
 import com.github.tddiaz.service.dto.DealDto;
-import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +37,20 @@ public class FileUploadServiceImpl implements FileUploadService {
     private DealService dealService;
 
     private AccumulativeDealCountService accumulativeDealCountService;
+
+    private CSVFileParser csvFileParser;
+
+    private ApplicationEventPublisher applicationEventPublisher;
+
+    @Autowired
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.applicationEventPublisher = applicationEventPublisher;
+    }
+
+    @Autowired
+    public void setCsvFileParser(CSVFileParser csvFileParser) {
+        this.csvFileParser = csvFileParser;
+    }
 
     @Autowired
     public void setAccumulativeDealCountService(AccumulativeDealCountService accumulativeDealCountService) {
@@ -61,21 +73,18 @@ public class FileUploadServiceImpl implements FileUploadService {
 
         LOGGER.info("Import File Request. File Name: {}", transactionLog.getFileName());
 
-        Reader reader = null;
-
         try {
 
-            StopWatch stopWatch = new StopWatch();
+            final StopWatch stopWatch = new StopWatch();
             stopWatch.start();
 
-            reader = new InputStreamReader(file.getInputStream());
-
-            final Iterable<CSVRecord> records = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(reader);
+            final Iterable<CSVRecord> records = csvFileParser.parse(file);
 
             final Map<CurrencyCode, Long> currencyCountMap = accumulativeDealCountService.findAllDealsCurrencyCountMap();
 
             final List<ValidDeal> validDeals = new LinkedList<>();
             final List<InvalidDeal> invalidDeals = new LinkedList<>();
+
 
             for (CSVRecord record: records) {
 
@@ -104,6 +113,7 @@ public class FileUploadServiceImpl implements FileUploadService {
                 }
             }
 
+
             dealService.saveValidDeals(validDeals);
             dealService.saveInvalidDeals(invalidDeals);
 
@@ -113,14 +123,14 @@ public class FileUploadServiceImpl implements FileUploadService {
 
             LOGGER.info("Deals Imported Summary: Number of Valid Deals - {}, Number of Invalid Deals - {}, Elapsed Time - {}s", validDeals.size(), invalidDeals.size(), processDuration);
 
+            transactionLog.setInvalidDealsImportedCount(invalidDeals.size());
+            transactionLog.setDealsImportedCount(validDeals.size());
+            transactionLog.setProcessDuration(processDuration);
+
+            applicationEventPublisher.publishEvent(new DealsImportedEvent(currencyCountMap, transactionLog));
+
         } catch (Exception e) {
             throw new FileUploadException("Error importing deals.", e);
-        } finally {
-            try {
-                reader.close();
-            } catch (IOException e) {
-                LOGGER.error("Error closing the File Reader.");
-            }
         }
     }
 

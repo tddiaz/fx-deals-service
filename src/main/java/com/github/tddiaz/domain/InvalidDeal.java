@@ -3,6 +3,7 @@ package com.github.tddiaz.domain;
 import com.github.tddiaz.service.dto.DealDto;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,10 +40,11 @@ public class InvalidDeal extends Deal {
     public static InvalidDeal valueOf(DealDto dealDto) {
 
         final InvalidDeal invalidDeal = new InvalidDeal();
-        invalidDeal.setDealId(dealDto.getDealId());
-        invalidDeal.setFromCurrency(dealDto.getFromCurrency());
-        invalidDeal.setToCurrency(dealDto.getToCurrency());
-        invalidDeal.setAmount(dealDto.getAmount());
+        invalidDeal.setDealId(StringUtils.isEmpty(dealDto.getDealId()) ? StringUtils.EMPTY : dealDto.getDealId());
+        invalidDeal.setFromCurrency(StringUtils.isEmpty(dealDto.getFromCurrency()) ? StringUtils.EMPTY : dealDto.getFromCurrency());
+        invalidDeal.setToCurrency(StringUtils.isEmpty(dealDto.getToCurrency()) ? StringUtils.EMPTY : dealDto.getToCurrency());
+        invalidDeal.setDateTime(StringUtils.isEmpty(dealDto.getDateTime()) ? StringUtils.EMPTY : dealDto.getDateTime());
+        invalidDeal.setAmount(StringUtils.isEmpty(dealDto.getAmount()) ? StringUtils.EMPTY : dealDto.getAmount());
 
         return invalidDeal;
     }
