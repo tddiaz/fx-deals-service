@@ -10,6 +10,7 @@ import com.github.tddiaz.service.deals.AccumulativeDealCountService;
 import com.github.tddiaz.service.deals.DealService;
 import com.github.tddiaz.service.deals.DealsValidator;
 import com.github.tddiaz.service.dto.DealDto;
+import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
@@ -20,6 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -38,18 +42,11 @@ public class FileUploadServiceImpl implements FileUploadService {
 
     private AccumulativeDealCountService accumulativeDealCountService;
 
-    private CSVFileParser csvFileParser;
-
     private ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
-    }
-
-    @Autowired
-    public void setCsvFileParser(CSVFileParser csvFileParser) {
-        this.csvFileParser = csvFileParser;
     }
 
     @Autowired
@@ -73,12 +70,16 @@ public class FileUploadServiceImpl implements FileUploadService {
 
         LOGGER.info("Import File Request. File Name: {}", transactionLog.getFileName());
 
+        Reader reader = null;
+
         try {
 
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start();
 
-            final Iterable<CSVRecord> records = csvFileParser.parse(file);
+            reader = new InputStreamReader(file.getInputStream());
+
+            final Iterable<CSVRecord> records = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(reader);
 
             final Map<CurrencyCode, Long> currencyCountMap = accumulativeDealCountService.findAllDealsCurrencyCountMap();
 
@@ -131,6 +132,12 @@ public class FileUploadServiceImpl implements FileUploadService {
 
         } catch (Exception e) {
             throw new FileUploadException("Error importing deals.", e);
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                LOGGER.error("Error closing the File Reader.");
+            }
         }
     }
 

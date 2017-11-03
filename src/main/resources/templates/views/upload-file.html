@@ -5,15 +5,23 @@
     <script th:src="@{webjars/jquery/1.11.1/jquery.min.js}" type="application/javascript"/>
     <title>Upload Deals</title>
 </head>
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container">
+            <div class="navbar-header">
+                <p class="navbar-brand">Bloomberg Data Warehouse</p>
+            </div>
+        </div>
+    </nav>
     <div class="container">
-        <h2>Upload File</h2>
+        <h3>Import Deals</h3>
 
         <form class="form-horizontal" th:object="${fileUploadForm}" th:action="@{/upload}" method="post" enctype="multipart/form-data">
 
             <div th:if="${#fields.hasErrors('file')}" class="alert alert-danger">
-               <ul>
-                   <li th:each="err : ${#fields.errors('file')}" th:text="${err}" />
-               </ul>
+                <ul>
+                    <li th:each="err : ${#fields.errors('file')}" th:text="${err}" />
+                </ul>
             </div>
             <div th:if="${success}" class="alert alert-success">
                 <strong>File Successfully Imported!</strong>
@@ -34,6 +42,5 @@
             </div>
         </form>
     </div>
-<body>
 </body>
 </html>
