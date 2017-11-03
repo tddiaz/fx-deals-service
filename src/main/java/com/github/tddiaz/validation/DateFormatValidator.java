@@ -6,15 +6,14 @@ import org.apache.commons.lang3.StringUtils;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+
+import static com.github.tddiaz.util.DateTimeUtil.*;
 
 /**
  * Created by tristandiaz on 10/31/17.
  */
 public class DateFormatValidator implements ConstraintValidator<ValidDateFormat, String> {
-
-    private static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     @Override
     public void initialize(ValidDateFormat constraintAnnotation) {
@@ -28,10 +27,8 @@ public class DateFormatValidator implements ConstraintValidator<ValidDateFormat,
             return true;
         }
 
-        final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
-
         try {
-            LocalDateTime.parse(value, dateTimeFormatter);
+            LocalDateTime.parse(value, FORMATTER);
         } catch (DateTimeParseException e) {
             return false;
         }

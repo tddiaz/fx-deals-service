@@ -1,7 +1,6 @@
 package com.github.tddiaz.service.dto;
 
 import com.github.tddiaz.validation.constraints.Decimal;
-import com.github.tddiaz.validation.constraints.UniqueDealId;
 import com.github.tddiaz.validation.constraints.ValidDateFormat;
 import com.github.tddiaz.validation.constraints.ValidISOCurrency;
 import lombok.Getter;
@@ -16,7 +15,7 @@ import org.hibernate.validator.constraints.NotBlank;
 public class DealDto {
 
     @NotBlank
-    @UniqueDealId
+//    @UniqueDealId
     private String dealId;
 
     @NotBlank

@@ -12,6 +12,8 @@ import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import static com.github.tddiaz.util.DateTimeUtil.*;
+
 /**
  * Created by tristandiaz on 10/29/17.
  */
@@ -49,6 +51,7 @@ public class ValidDeal extends Deal {
         validDeal.setFromCurrency(CurrencyCode.valueOf(dealDto.getFromCurrency()));
         validDeal.setToCurrency(CurrencyCode.valueOf(dealDto.getToCurrency()));
         validDeal.setAmount(new BigDecimal(dealDto.getAmount()));
+        validDeal.setDateTime(LocalDateTime.parse(dealDto.getDateTime(), FORMATTER));
 
         return  validDeal;
     }
